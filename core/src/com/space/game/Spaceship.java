@@ -17,7 +17,7 @@ import java.util.List;
 public class Spaceship {
     private Texture texture;
     private Vector2 position;
-    private int ammunitions = 10;
+    private int ammunitions;
     public int kills = 0;
     private float angle = 0;
     private boolean isLeftPressed = false; // Variável de controle para o botão "A"
@@ -36,6 +36,7 @@ public class Spaceship {
         // System.out.println("x_nave: " + x_nave + " y_nave: " + y_nave);
         position = new Vector2(x_nave, y_nave);
         this.aliens = aliens;
+        ammunitions = 10;
     }
 
     public Vector2 getPosition() {
