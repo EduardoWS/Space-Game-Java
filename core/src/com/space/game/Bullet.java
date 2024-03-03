@@ -15,7 +15,8 @@ public class Bullet {
 
     public Bullet(Vector2 spaceshipPosition, float angle, float spaceshipWidth, float spaceshipHeight) {
         this.angle = angle + 90;
-        texture = new Texture("assets/images/guns/tiro1.png");
+
+        texture = new Texture("assets/images/guns/tiro2.png");
         float bulletWidth = texture.getWidth();
         float bulletHeight = texture.getHeight();
         float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
@@ -36,7 +37,7 @@ public class Bullet {
 
     public void render(SpriteBatch batch) {
         batch.draw(texture, position.x, position.y, texture.getWidth() / 2, texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 
-        2, 2, angle+90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        1, 1, angle+90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }
 
     public Rectangle getBounds() {

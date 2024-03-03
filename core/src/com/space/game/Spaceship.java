@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 // import com.badlogic.gdx.utils.SortedIntList.Iterator;
 import java.util.Iterator;
+import com.badlogic.gdx.math.Rectangle;
 
 
 // import com.badlogic.gdx.scenes.scene2d.ui.List;
@@ -16,7 +17,8 @@ import java.util.List;
 public class Spaceship {
     private Texture texture;
     private Vector2 position;
-    private float speed = 200;
+    private int ammunitions = 10;
+    public int kills = 0;
     private float angle = 0;
     private boolean isLeftPressed = false; // Variável de controle para o botão "A"
     private boolean isRightPressed = false; // Variável de controle para o botão "D"
@@ -38,6 +40,14 @@ public class Spaceship {
 
     public Vector2 getPosition() {
         return position;
+    }
+
+    public void setAmmunitions(int ammunitions) {
+        this.ammunitions += ammunitions;
+    }
+
+    public int getAmmunitions() {
+        return ammunitions;
     }
 
     public void update() {
@@ -101,8 +111,11 @@ public class Spaceship {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             // verificar se ja tem 3 tiros na tela
-            if (bullets.size() < 5)
+            if (bullets.size() < 5 && ammunitions > 0) {
                 bullets.add(new Bullet(getPosition(), angle, texture.getWidth() * scale, texture.getHeight() * scale));
+                this.ammunitions--;
+                // System.out.println("Ammunitions: " + ammunitions);
+            }
         }
 
         // Atualiza a posição da nave com base na velocidade
@@ -134,6 +147,7 @@ public class Spaceship {
                     bulletHitAlien = true;
                     alienIterator.remove();
                     alien.dispose();
+                    kills++;
                     break;
                 }
             }
@@ -144,6 +158,10 @@ public class Spaceship {
                 bullet.dispose();
             }
         }
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(position.x, position.y, texture.getWidth() * scale, texture.getHeight() * scale);
     }
 
 

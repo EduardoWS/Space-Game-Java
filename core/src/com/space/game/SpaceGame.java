@@ -4,18 +4,25 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.Color;
 // import com.badlogic.gdx.scenes.scene2d.ui.List;
 import java.util.List;
 import java.util.ArrayList;
 
+
 public class SpaceGame extends ApplicationAdapter {
     private Spaceship spaceship;
     private Background background;
-    // private Alien alien0, alien1, alien2, alien3;
     private List<Alien> aliens = new ArrayList<>();
 	SpriteBatch batch;
-    // private List<Bullet> bullets = new ArrayList<Bullet>();
 
+    private FreeTypeFontGenerator generator;
+    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
+    private BitmapFont font;
+    private int hordas;
+    
 
     @Override
     public void create() {
@@ -25,10 +32,17 @@ public class SpaceGame extends ApplicationAdapter {
         for (int i = 0; i < 4; i++) {
             aliens.add(new Alien(i, spaceship.getPosition()));
         }
-        // alien0 = new Alien(0, spaceship.getPosition());
-        // alien1 = new Alien(1, spaceship.getPosition());
-        // alien2 = new Alien(2, spaceship.getPosition());
-        // alien3 = new Alien(3, spaceship.getPosition());
+
+        generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
+        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 30;
+        parameter.borderWidth = 2;
+        parameter.borderColor = Color.WHITE;
+        parameter.color = Color.BLACK;
+        font = generator.generateFont(parameter);
+
+        hordas=1;
+        
     }
 
     @Override
@@ -36,34 +50,45 @@ public class SpaceGame extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        
 		batch.begin();
-
-        // alien0.update(spaceship.getPosition());
-        // alien1.update(spaceship.getPosition());
-        // alien2.update(spaceship.getPosition());
-        // alien3.update(spaceship.getPosition());
-
+        
         spaceship.update();
         background.render(batch);
         spaceship.render(batch);
 
+        if (spaceship.kills >= 20){
+            hordas++;
+            spaceship.kills = 0;
+        }
+        
         // verificar se o vetor de aliens está com dois aliens
         if (aliens.size() <= 2) {
             // se estiver vazio, adicione 4 novos aliens
             for (int i = 0; i < 4; i++) {
                 aliens.add(new Alien(i, spaceship.getPosition()));
             }
+            spaceship.setAmmunitions(5);
         }
-
+        
         for (Alien alien : aliens) {
-            alien.update(spaceship.getPosition());
-            alien.render(batch);
-        }
-        // alien0.render(batch);
-        // alien1.render(batch);
-        // alien2.render(batch);
-        // alien3.render(batch);
+            if (alien.getBounds().overlaps(spaceship.getBounds())) {
+                // O alien colidiu com a nave
+                System.out.println("Fim do jogo");
+                // Aqui você pode terminar o jogo
+            }else{
+                alien.update(spaceship.getPosition());
+                alien.render(batch);
 
+            }
+        }
+        
+        // desenhar texto embaixo esquerdo
+        font.draw(batch, "Ammunitions: " + spaceship.getAmmunitions(), Gdx.graphics.getWidth()*(1/3) + 10, 30);
+        // desenhar texto embaixo direito
+        font.draw(batch, "Horda: " + hordas, Gdx.graphics.getWidth() - 200, 30);
+        //desenhar texto embaixo centro
+        font.draw(batch, "Kills: " + spaceship.kills, Gdx.graphics.getWidth()/2 - 20, 30);
 		batch.end();
     }
 
@@ -74,10 +99,6 @@ public class SpaceGame extends ApplicationAdapter {
         for (Alien alien : aliens) {
             alien.dispose();
         }
-        // alien0.dispose();
-        // alien1.dispose();
-        // alien2.dispose();
-        // alien3.dispose();
         batch.dispose();
 
         
