@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Alien {
@@ -21,16 +22,16 @@ public class Alien {
         // pos = 0: top, 1: right, 2: bottom, 3: left
         if (pos == 0) {
             // alien no topo
-            position = new Vector2(spaceshipPosition.x, Gdx.graphics.getHeight() - texture.getHeight() * scale);
-            speed = 400;
+            position = new Vector2(MathUtils.random(0, Gdx.graphics.getWidth() - texture.getWidth()), Gdx.graphics.getHeight() - texture.getHeight() * scale);
+            speed = 100;
         } else if (pos == 1) {
             // alien na direita
             position = new Vector2(Gdx.graphics.getWidth() - texture.getWidth()* scale, spaceshipPosition.y);
-            speed = 500;
+            speed = 200;
         } else if (pos == 2) {
             // alien embaixo
             position = new Vector2(spaceshipPosition.x, 0);
-            speed = 300;
+            speed = 150;
         } else if (pos == 3) {
             // alien na esquerda
             position = new Vector2(0, spaceshipPosition.y);

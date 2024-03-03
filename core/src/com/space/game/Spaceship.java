@@ -75,14 +75,14 @@ public class Spaceship {
         if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
             isLeftPressed = true;
             isRightPressed = false;
-            angle += 45; // Girar para a direita
+            angle = 45; // Girar para a direita
             
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             isLeftPressed = false;
             isRightPressed = true;
-            angle -= 45; // Girar para a direita
+            angle = -45; // Girar para a direita
             
         }
 

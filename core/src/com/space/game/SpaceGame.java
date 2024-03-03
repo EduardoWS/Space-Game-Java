@@ -47,8 +47,8 @@ public class SpaceGame extends ApplicationAdapter {
         background.render(batch);
         spaceship.render(batch);
 
-        // verificar se o vetor de aliens está vazio
-        if (aliens.isEmpty()) {
+        // verificar se o vetor de aliens está com dois aliens
+        if (aliens.size() <= 2) {
             // se estiver vazio, adicione 4 novos aliens
             for (int i = 0; i < 4; i++) {
                 aliens.add(new Alien(i, spaceship.getPosition()));
