@@ -50,12 +50,12 @@ public class Spaceship {
         }
 
         // Atualiza a posição da nave com base na velocidade
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            position.y += speed * Gdx.graphics.getDeltaTime();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            position.y -= speed * Gdx.graphics.getDeltaTime();
-        }
+        // if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+        //     position.y += speed * Gdx.graphics.getDeltaTime();
+        // }
+        // if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+        //     position.y -= speed * Gdx.graphics.getDeltaTime();
+        // }
     }
 
     public void render(SpriteBatch batch) {
