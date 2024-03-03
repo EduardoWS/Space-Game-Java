@@ -1,0 +1,15 @@
+// Configurando as dependências
+dependencies {
+    implementation "com.badlogicgames.gdx:gdx:1.9.12"
+    implementation "com.badlogicgames.gdx:gdx-backend-lwjgl:1.9.12"
+    implementation "com.badlogicgames.gdx:gdx-platform:1.9.12:natives-desktop"
+}
+
+
+sourceCompatibility = 1.8
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = [ "src/" ]
+
+eclipse.project.name = appName + "-core"
+
