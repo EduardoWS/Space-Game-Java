@@ -28,7 +28,7 @@ public class SpaceGame extends ApplicationAdapter {
     private GlyphLayout layout_text;
 
     private enum GameState {
-        PLAYING, GAME_OVER
+        PLAYING, GAME_OVER, MENU
     }
     private GameState gameState;
     
