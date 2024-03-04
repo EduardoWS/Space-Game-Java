@@ -34,25 +34,13 @@ public class SpaceGame extends ApplicationAdapter {
     @Override
     public void create() {
         gsm = new GameStateManager();
-
-        gsm.setState(GameState.PLAYING);
-
 		batch = new SpriteBatch(); // Crie um novo objeto SpriteBatch
         background = new Background();
         spaceship = new Spaceship(aliens);
-        for (int i = 0; i < 4; i++) {
-            aliens.add(new Alien(i, spaceship.getPosition()));
-        }
-
         generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 30;
-        parameter.borderWidth = 2;
-        parameter.borderColor = Color.WHITE;
-        parameter.color = Color.BLACK;
-        font_white = generator.generateFont(parameter);
 
-        hordas=1;
+        startNewGame();
         
     }
 
@@ -69,98 +57,17 @@ public class SpaceGame extends ApplicationAdapter {
                 // Renderize o menu aqui
                 break;
             case PLAYING:
-                // Lógica do jogo
-                
-                // renderizar o fundo antes dos outros objetos
-                background.render(batch);
-                spaceship.render(batch);
-                spaceship.update();
-        
-                if (spaceship.kills >= 20){
-                    hordas++;
-                    spaceship.kills = 0;
-                }
-                
-                // verificar se o vetor de aliens está com dois aliens
-                if (aliens.size() <= 2) {
-                    // se estiver vazio, adicione 4 novos aliens
-                    for (int i = 0; i < 4; i++) {
-                        aliens.add(new Alien(i, spaceship.getPosition()));
-                    }
-                    if (spaceship.kills != 0)
-                        spaceship.setAmmunitions(5);
-                }
-                
-                for (Alien alien : aliens) {
-                    if (alien.getBounds().overlaps(spaceship.getBounds())) {
-                        // O alien colidiu com a nave
-                        gsm.setState(GameState.GAME_OVER);
-                        limparAliens();
-                        break;
-        
-                    }else{
-                        alien.update(spaceship.getPosition());
-                        alien.render(batch);
-        
-                    }
-                }
-                
-                // desenhar texto embaixo esquerdo
-                text_to_show = "AMMO: ";
-                layout_text = new GlyphLayout(font_white, text_to_show + spaceship.getAmmunitions());
-                font_white.draw(batch, text_to_show + spaceship.getAmmunitions(), 10, 30);
-                // desenhar texto embaixo direito
-                text_to_show = "Horda: ";
-                layout_text = new GlyphLayout(font_white, text_to_show + hordas);
-                font_white.draw(batch, text_to_show + hordas, Gdx.graphics.getWidth() - layout_text.width -10, 30);
-                //desenhar text_to_showo embaixo centro
-                text_to_show = "Kills: ";
-                layout_text = new GlyphLayout(font_white, text_to_show + spaceship.kills);
-                font_white.draw(batch, text_to_show + spaceship.kills, Gdx.graphics.getWidth()/2 - layout_text.width/2, 30);
-
+                updatePlayingState();
                 break;
-
             case GAME_OVER:
-                // Tela de game over
-                parameter.borderColor = Color.RED;
-                parameter.borderWidth = 2;
-                parameter.size = 100;
-                parameter.color = Color.BLACK;
-                font_red = generator.generateFont(parameter);
-                text_to_show = "GAME OVER";
-                layout_text = new GlyphLayout(font_red, text_to_show);
-                font_red.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2);
-                parameter.size = 30;
-                font_red = generator.generateFont(parameter);
-                text_to_show = "Press 'R' to restart";
-                layout_text = new GlyphLayout(font_red, text_to_show);
-                font_red.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2 - 150);
-
-                // desenhar texto embaixo esquerdo
-                text_to_show = "AMMO: ";
-                layout_text = new GlyphLayout(font_red, text_to_show + spaceship.getAmmunitions());
-                font_red.draw(batch, text_to_show + spaceship.getAmmunitions(), 10, 30);
-                // desenhar texto embaixo direito
-                text_to_show = "Horda: ";
-                layout_text = new GlyphLayout(font_red, text_to_show + hordas);
-                font_red.draw(batch, text_to_show + hordas, Gdx.graphics.getWidth() - layout_text.width -10, 30);
-                //desenhar texto embaixo centro
-                text_to_show = "Total Kills: ";
-                int total_kills = (spaceship.kills + (hordas-1)*20);
-                layout_text = new GlyphLayout(font_red, text_to_show + total_kills);
-                font_red.draw(batch, text_to_show + total_kills, Gdx.graphics.getWidth()/2 - layout_text.width/2, 30);
-
-
-                if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                    gsm.setState(GameState.PLAYING);
-                    spaceship = new Spaceship(aliens);
-                    hordas = 1;
-                }
+                updateGameOverState();
                 break;
         }
 
 		batch.end();
     }
+
+
 
     @Override
     public void dispose() {
@@ -174,10 +81,128 @@ public class SpaceGame extends ApplicationAdapter {
         
     }
 
+
+    private void updatePlayingState() {
+        background.render(batch);
+        spaceship.render(batch);
+        spaceship.update();
+    
+        // Verifica se é hora de iniciar uma nova horda
+        if (spaceship.kills >= 20) {
+            hordas++;
+            spaceship.kills = 0;
+        }
+    
+        // Adiciona novos aliens se necessário
+        if (aliens.size() <= 2) {
+            for (int i = 0; i < 4; i++) {
+                aliens.add(new Alien(i, spaceship.getPosition()));
+            }
+            if (spaceship.kills != 0)
+                spaceship.setAmmunitions(5);
+        }
+    
+        // Atualização e renderização de cada alienígena
+        for (Alien alien : aliens) {
+            if (alien.getBounds().overlaps(spaceship.getBounds())) {
+                gsm.setState(GameState.GAME_OVER);
+                limparAliens();
+                break;
+            } else {
+                alien.update(spaceship.getPosition());
+                alien.render(batch);
+            }
+        }
+    
+        // Exibir informações do jogo
+        displayGameInfo();
+    }
+
+    private void updateGameOverState() {
+        // Configuração e exibição da mensagem de GAME OVER
+        displayGameOverInfo();
+    
+        // Reiniciar jogo se 'R' for pressionado
+        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            startNewGame();
+        }
+    }
+
+    private void displayGameInfo() {
+        // Código para exibir AMMO, Horda, e Kills
+        parameter.size = 30;
+        parameter.borderWidth = 2;
+        parameter.borderColor = Color.WHITE;
+        parameter.color = Color.BLACK;
+        font_white = generator.generateFont(parameter);
+
+        // desenhar texto embaixo esquerdo
+        text_to_show = "AMMO: ";
+        layout_text = new GlyphLayout(font_white, text_to_show + spaceship.getAmmunitions());
+        font_white.draw(batch, text_to_show + spaceship.getAmmunitions(), 10, 30);
+        // desenhar texto embaixo direito
+        text_to_show = "Horda: ";
+        layout_text = new GlyphLayout(font_white, text_to_show + hordas);
+        font_white.draw(batch, text_to_show + hordas, Gdx.graphics.getWidth() - layout_text.width -10, 30);
+        //desenhar text_to_showo embaixo centro
+        text_to_show = "Kills: ";
+        layout_text = new GlyphLayout(font_white, text_to_show + spaceship.kills);
+        font_white.draw(batch, text_to_show + spaceship.kills, Gdx.graphics.getWidth()/2 - layout_text.width/2, 30);
+    }
+    
+    private void displayGameOverInfo() {
+        // Código para exibir GAME OVER e 'Press 'R' to restart', junto com AMMO, Horda, e Total Kills
+        parameter.borderColor = Color.RED;
+        parameter.borderWidth = 2;
+        parameter.size = 100;
+        parameter.color = Color.BLACK;
+        font_red = generator.generateFont(parameter);
+        text_to_show = "GAME OVER";
+        layout_text = new GlyphLayout(font_red, text_to_show);
+        font_red.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2);
+        parameter.size = 30;
+        font_red = generator.generateFont(parameter);
+        text_to_show = "Press 'R' to restart";
+        layout_text = new GlyphLayout(font_red, text_to_show);
+        font_red.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2 - 150);
+
+        // desenhar texto embaixo esquerdo
+        text_to_show = "AMMO: ";
+        layout_text = new GlyphLayout(font_red, text_to_show + spaceship.getAmmunitions());
+        font_red.draw(batch, text_to_show + spaceship.getAmmunitions(), 10, 30);
+        // desenhar texto embaixo direito
+        text_to_show = "Horda: ";
+        layout_text = new GlyphLayout(font_red, text_to_show + hordas);
+        font_red.draw(batch, text_to_show + hordas, Gdx.graphics.getWidth() - layout_text.width -10, 30);
+        //desenhar texto embaixo centro
+        text_to_show = "Total Kills: ";
+        int total_kills = (spaceship.kills + (hordas-1)*20);
+        layout_text = new GlyphLayout(font_red, text_to_show + total_kills);
+        font_red.draw(batch, text_to_show + total_kills, Gdx.graphics.getWidth()/2 - layout_text.width/2, 30);
+    }
+
+    private void startNewGame() {
+        // Código para iniciar um novo jogo
+        gsm.setState(GameState.PLAYING);
+        // se spaceship não for null, então limpe a nave
+        if (spaceship != null) {
+            spaceship.dispose();
+        }
+        spaceship = new Spaceship(aliens);
+
+        for (int i = 0; i < 4; i++) {
+            aliens.add(new Alien(i, spaceship.getPosition()));
+        }
+
+        hordas=1;
+    }
+
     private void limparAliens() {
         for (Alien alien : aliens) {
             alien.dispose();
         }
         aliens.clear();
     }
+
+    
 }
