@@ -8,14 +8,13 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Alien {
-    private Texture texture;
+    private Texture texture = new Texture("assets/images/aliens/alien1.png");
     private Vector2 position;
     private float speed = 200;
     private float scale;
     private Rectangle bounds;
 
     public Alien(int pos, Vector2 spaceshipPosition) {
-        texture = new Texture("assets/images/aliens/alien1.png");
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
         scale *= 0.035f; // Ajuste este valor conforme necessário
 
@@ -61,6 +60,7 @@ public class Alien {
 
 
     public void dispose() {
+        
         texture.dispose();
     }
 }
