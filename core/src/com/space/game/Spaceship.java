@@ -30,7 +30,7 @@ public class Spaceship {
     public Spaceship(List<Alien> aliens) {
         texture = new Texture("assets/images/spaceships/spaceship.png");
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
-        scale *= 0.075f; // Ajuste este valor conforme necessário
+        scale *= 0.075f;
         x_nave = Gdx.graphics.getWidth() / 2f - texture.getWidth() / 2f * scale;
         y_nave = Gdx.graphics.getHeight() / 2f - texture.getHeight() / 2f * scale;
         // System.out.println("x_nave: " + x_nave + " y_nave: " + y_nave);

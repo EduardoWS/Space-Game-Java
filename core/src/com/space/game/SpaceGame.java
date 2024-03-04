@@ -190,12 +190,12 @@ public class SpaceGame extends ApplicationAdapter {
         
         text_to_show = "GAME OVER";
         layout_text = new GlyphLayout(font100, text_to_show);
-        font100.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2);
+        font100.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2+layout_text.height);
 
         font30.setColor(Color.RED);
         text_to_show = "press enter to continue";
         layout_text = new GlyphLayout(font30, text_to_show);
-        font30.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2 - 150);
+        font30.draw(batch, text_to_show, Gdx.graphics.getWidth()/2 - layout_text.width/2, Gdx.graphics.getHeight()/2 - layout_text.height*3);
 
         // desenhar texto embaixo esquerdo
         text_to_show = "AMMO: ";
