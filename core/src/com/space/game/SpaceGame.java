@@ -21,8 +21,6 @@ public class SpaceGame extends ApplicationAdapter {
     private List<Alien> aliens;
 	SpriteBatch batch;
 
-    private FreeTypeFontGenerator generator;
-    private FreeTypeFontGenerator.FreeTypeFontParameter parameter;
     private BitmapFont font30, font100, font150;
     private int hordas;
     private String text_to_show;
@@ -38,8 +36,8 @@ public class SpaceGame extends ApplicationAdapter {
         background = new Background();
         spaceship = new Spaceship(aliens);
 
-        generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
-        parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
         // Cria uma fonte de tamanho 30
         parameter.size = 30;
