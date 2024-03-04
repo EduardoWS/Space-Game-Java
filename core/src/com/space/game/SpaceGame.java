@@ -40,7 +40,7 @@ public class SpaceGame extends ApplicationAdapter {
         generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
         parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 
-        startNewGame();
+        gsm.setState(GameState.MENU);
         
     }
 
@@ -54,7 +54,7 @@ public class SpaceGame extends ApplicationAdapter {
 
         switch (gsm.getState()) {
             case MENU:
-                // Renderize o menu aqui
+                updateMenuState();
                 break;
             case PLAYING:
                 updatePlayingState();
@@ -80,6 +80,51 @@ public class SpaceGame extends ApplicationAdapter {
 
         
     }
+
+
+    private void updateMenuState() {
+        // Define a fonte para o título
+        parameter.size = 150;
+        parameter.borderWidth = 2;
+        parameter.borderColor = Color.WHITE;
+        parameter.color = Color.BLACK;
+        font_white = generator.generateFont(parameter);
+    
+        // Desenha o título "SPACE GAME"
+        String title = "SPACE GAME";
+        GlyphLayout titleLayout = new GlyphLayout(font_white, title);
+        float title_x = Gdx.graphics.getWidth() / 2 - titleLayout.width / 2;
+        float title_y = Gdx.graphics.getHeight()/2 + titleLayout.height;
+        font_white.draw(batch, title, title_x,  title_y);
+    
+        // Define a fonte para o botão
+        parameter.size = 30;
+        //parameter.borderStraight = false;
+        parameter.borderWidth = 0;
+        parameter.color = Color.WHITE;
+        font_white = generator.generateFont(parameter);
+    
+        // Desenha o botão "New Game"
+        String buttonText = "1. New Game";
+        GlyphLayout buttonLayout = new GlyphLayout(font_white, buttonText);
+        float buttonX = Gdx.graphics.getWidth() / 2 - buttonLayout.width / 2;
+        float buttonY = title_y - titleLayout.height*2;
+        font_white.draw(batch, buttonText, buttonX, buttonY);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            startNewGame();
+        }
+    
+        // Verifica se o botão "New Game" foi pressionado
+        // if (Gdx.input.isTouched()) {
+        //     float touchX = Gdx.input.getX();
+        //     float touchY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Coordenadas do libGDX são invertidas no eixo Y
+        //     if (touchX >= buttonX && touchX <= buttonX + buttonLayout.width && touchY >= buttonY && touchY <= buttonY + buttonLayout.height) {
+        //         startNewGame();
+        //     }
+        // }
+    }
+    
 
 
     private void updatePlayingState() {
