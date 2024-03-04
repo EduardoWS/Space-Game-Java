@@ -12,6 +12,7 @@ public class Bullet {
     private float angle;
     private float speed = 800; 
     private Rectangle bounds;
+    private boolean shouldRemove = false;
 
     public Bullet(Vector2 spaceshipPosition, float angle, float spaceshipWidth, float spaceshipHeight) {
         this.angle = angle + 90;
@@ -25,6 +26,14 @@ public class Bullet {
         bounds = new Rectangle(position.x, position.y, bulletWidth, bulletHeight);
     }
 
+    public boolean shouldRemove() {
+        return shouldRemove;
+    }
+
+    public void markForRemoval() {
+        shouldRemove = true;
+    }
+
     public Vector2 getPosition() {
         return position;
     }
@@ -36,6 +45,7 @@ public class Bullet {
     }
 
     public void render(SpriteBatch batch) {
+        if (shouldRemove) return;
         batch.draw(texture, position.x, position.y, texture.getWidth() / 2, texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 
         1, 1, angle+90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }

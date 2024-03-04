@@ -136,10 +136,24 @@ public class Spaceship {
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
             Bullet bullet = bulletIterator.next();
+            if (bullet.shouldRemove()) {
+                bulletIterator.remove();
+                bullet.dispose();
+                continue; // Pula para a próxima iteração do laço
+            }
             bullet.update();
             bullet.render(batch);
-    
+            
             boolean bulletHitAlien = false;
+    
+            // remove as balas que sairam da tela (nas 4 direções) ou que colidiram com um alien
+            if (bullet.getPosition().x < 0 || bullet.getPosition().x > Gdx.graphics.getWidth() || bullet.getPosition().y < 0 || bullet.getPosition().y > Gdx.graphics.getHeight() || bulletHitAlien) {
+                bulletIterator.remove();
+                bullet.dispose();
+                continue; // Pula para a próxima iteração do laço
+            }
+
+
             Iterator<Alien> alienIterator = aliens.iterator();
             while (alienIterator.hasNext()) {
                 Alien alien = alienIterator.next();
@@ -148,16 +162,14 @@ public class Spaceship {
                     bulletHitAlien = true;
                     alienIterator.remove();
                     alien.dispose();
+                    bullet.markForRemoval();
+                    // bulletIterator.remove();
+                    // bullet.dispose();
                     kills++;
                     break;
                 }
             }
-    
-            // remove as balas que sairam da tela (nas 4 direções) ou que colidiram com um alien
-            if (bullet.getPosition().x < 0 || bullet.getPosition().x > Gdx.graphics.getWidth() || bullet.getPosition().y < 0 || bullet.getPosition().y > Gdx.graphics.getHeight() || bulletHitAlien) {
-                bulletIterator.remove();
-                bullet.dispose();
-            }
+            
         }
     }
 
