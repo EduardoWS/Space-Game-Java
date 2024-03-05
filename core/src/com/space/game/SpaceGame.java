@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+// import com.badlogic.gdx.utils.SortedIntList.Iterator;
 import com.space.game.GameStateManager.GameState;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.graphics.Color;
 import java.util.List;
 import java.util.ArrayList;
 import com.badlogic.gdx.Input;
-
+import java.util.Iterator;
 
 public class SpaceGame extends ApplicationAdapter {
     private Spaceship spaceship;
@@ -133,16 +134,17 @@ public class SpaceGame extends ApplicationAdapter {
         }
     
         // Adiciona novos aliens se necessário
-        if (aliens.size() <= 2) {
-            for (int i = 0; i < 4; i++) {
-                aliens.add(new Alien(i, spaceship.getPosition()));
-            }
-            if (spaceship.kills != 0)
-                spaceship.setAmmunitions(5);
-        }
+        spawnAliens();
     
         // Atualização e renderização de cada alienígena
-        for (Alien alien : aliens) {
+        Iterator<Alien> alienIterator = aliens.iterator();
+        while (alienIterator.hasNext()) {
+            Alien alien = alienIterator.next();
+            if (alien.shouldRemove()) {
+                alienIterator.remove();
+                alien.dispose();
+                continue;
+            }
             if (alien.getBounds().overlaps(spaceship.getBounds())) {
                 gsm.setState(GameState.GAME_OVER);
                 limparAliens();
@@ -150,6 +152,12 @@ public class SpaceGame extends ApplicationAdapter {
             } else {
                 alien.update(spaceship.getPosition());
                 alien.render(batch);
+                // Verifica se o alien está morto e saiu da tela
+                if (alien.isDead() && (alien.getPosition().x < 0 || alien.getPosition().x > Gdx.graphics.getWidth() || alien.getPosition().y < 0 || alien.getPosition().y > Gdx.graphics.getHeight())){
+                    alienIterator.remove();
+                    alien.dispose();
+                    continue;
+                }
             }
         }
     
@@ -229,6 +237,22 @@ public class SpaceGame extends ApplicationAdapter {
         hordas=1;
     }
 
+    private void spawnAliens(){
+        int count = 0;
+        for (Alien alien : aliens) {
+            if (!alien.isDead()) {
+                count++;
+            }
+        }
+        if (count <= 2) {
+            for (int i = 0; i < 4; i++) {
+                aliens.add(new Alien(i, spaceship.getPosition()));
+            }
+            if (spaceship.kills != 0)
+                spaceship.setAmmunitions(5);
+        }
+    }
+
 
 
     // SEÇÃO DE LIMPEZA ----------------------------------------------
@@ -254,8 +278,6 @@ public class SpaceGame extends ApplicationAdapter {
         font100.dispose();
         font150.dispose();
 
-
-        
     }
 
     // FIM DA SEÇÃO DE LIMPEZA ---------------------------------------

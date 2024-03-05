@@ -39,6 +39,10 @@ public class Spaceship {
         ammunitions = 10;
     }
 
+    public float getAngle() {
+        return angle;
+    }
+
     public Vector2 getPosition() {
         return position;
     }
@@ -153,18 +157,34 @@ public class Spaceship {
                 continue; // Pula para a próxima iteração do laço
             }
 
-
+            
+            
+            
             Iterator<Alien> alienIterator = aliens.iterator();
             while (alienIterator.hasNext()) {
+                // remove o alien que saiu da tela (4 direções)
                 Alien alien = alienIterator.next();
+                // if (alien.isDead() && (alien.getPosition().x < 0 || alien.getPosition().x > Gdx.graphics.getWidth() || alien.getPosition().y < 0 || alien.getPosition().y > Gdx.graphics.getHeight())){
+                //     System.out.println("Alien morto saiu da tela");
+                //     alienIterator.remove();
+                //     alien.dispose();
+                //     continue;
+                // }
                 if (alien.getBounds().overlaps(bullet.getBounds())) {
                     // A bala colidiu com um alien
                     bulletHitAlien = true;
-                    alienIterator.remove();
-                    alien.dispose();
                     bullet.markForRemoval();
-                    // bulletIterator.remove();
-                    // bullet.dispose();
+                    if (alien.isDead()) {
+                        alienIterator.remove();
+                        alien.dispose();
+                        continue;
+                    }
+                    alien.setTextureToDraw("assets/images/aliens/alienred.png");
+                    // fazer o alien ir para tras e parar de se mover
+                    alien.setSpeed(-30);
+                    alien.markDeath();
+                    // alienIterator.remove();
+                    // alien.dispose();
                     kills++;
                     break;
                 }

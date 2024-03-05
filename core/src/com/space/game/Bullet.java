@@ -22,6 +22,9 @@ public class Bullet {
         float bulletHeight = texture.getHeight();
         float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
         float bullet_y = spaceshipPosition.y + spaceshipHeight / 2 - bulletHeight / 2;
+        // TODO: melhorar essa parte
+        // float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
+        // float bullet_y = spaceshipPosition.y + spaceshipHeight ;
         position = new Vector2(bullet_x, bullet_y);
         bounds = new Rectangle(position.x, position.y, bulletWidth, bulletHeight);
     }

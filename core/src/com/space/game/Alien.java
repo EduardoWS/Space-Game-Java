@@ -11,8 +11,12 @@ public class Alien {
     private Texture texture = new Texture("assets/images/aliens/alien1.png");
     private Vector2 position;
     private float speed = 200;
+    private boolean death = false;
     private float scale;
     private Rectangle bounds;
+    private float deathTimer;
+    private final float TIME_TO_REMOVE = 2; // Tempo em segundos antes da remoção
+    private float deltaTime = Gdx.graphics.getDeltaTime();
 
     public Alien(int pos, Vector2 spaceshipPosition) {
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
@@ -39,6 +43,37 @@ public class Alien {
         bounds = new Rectangle(position.x, position.y, texture.getWidth() * scale, texture.getHeight() * scale);
     }
 
+    public void markDeath() {
+        death = true;
+        deathTimer = 0;
+    }
+
+    public boolean isDead() {
+        return death;
+    }
+
+    public boolean shouldRemove() {
+        return this.isDead() && deathTimer > TIME_TO_REMOVE;
+    }
+
+    public Vector2 getPosition() {
+        return position;
+    }
+
+    public void setTextureToDraw(String texturePath) {
+        texture = new Texture(texturePath);
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
+    }
+
+    public void setDirection(Vector2 direction) {
+        position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
+        position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
+        bounds.setPosition(position);
+    }
+
     public void render(SpriteBatch batch) {
         // Desenha a textura do alien com a escala aplicada
         batch.draw(texture, position.x, position.y, texture.getWidth() / 2, texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 
@@ -52,6 +87,9 @@ public class Alien {
         position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
         position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
         bounds.setPosition(position);
+        if (this.isDead()) {
+            this.deathTimer += this.deltaTime;
+        }
     }
 
     public Rectangle getBounds() {
