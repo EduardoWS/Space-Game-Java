@@ -26,16 +26,21 @@ public class SpaceGame extends ApplicationAdapter {
     private int hordas;
     private String text_to_show;
     private GlyphLayout layout_text;
+    private TextureManager textureManager;
 
     GameStateManager gsm;
     
 
     @Override
     public void create() {
+
+        textureManager = new TextureManager();
+        loadTextures();
+
         gsm = new GameStateManager();
 		batch = new SpriteBatch(); // Crie um novo objeto SpriteBatch
         background = new Background();
-        spaceship = new Spaceship(aliens);
+        // spaceship = new Spaceship(textureManager, aliens);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -228,10 +233,10 @@ public class SpaceGame extends ApplicationAdapter {
             spaceship.dispose();
         }
         aliens = new ArrayList<>(); 
-        spaceship = new Spaceship(aliens);
+        spaceship = new Spaceship(textureManager, aliens);
 
         for (int i = 0; i < 4; i++) {
-            aliens.add(new Alien(i, spaceship.getPosition()));
+            aliens.add(new Alien(textureManager, i, spaceship.getPosition()));
         }
 
         hordas=1;
@@ -246,11 +251,20 @@ public class SpaceGame extends ApplicationAdapter {
         }
         if (count <= 2) {
             for (int i = 0; i < 4; i++) {
-                aliens.add(new Alien(i, spaceship.getPosition()));
+                aliens.add(new Alien(textureManager, i, spaceship.getPosition()));
             }
             if (spaceship.kills != 0)
                 spaceship.setAmmunitions(5);
         }
+    }
+
+    private void loadTextures(){
+        // Carregar texturas
+        textureManager.loadTexture("bullet", TexturePaths.BULLET);
+        textureManager.loadTexture("spaceship", TexturePaths.SPACESHIP);
+        textureManager.loadTexture("alien", TexturePaths.ALIEN);
+        textureManager.loadTexture("alienDead", TexturePaths.ALIEN_DEAD);
+        textureManager.loadTexture("background", TexturePaths.BACKGROUND);
     }
 
 
@@ -277,6 +291,8 @@ public class SpaceGame extends ApplicationAdapter {
         font30.dispose();
         font100.dispose();
         font150.dispose();
+
+        textureManager.dispose();
 
     }
 

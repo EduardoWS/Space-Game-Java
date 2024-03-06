@@ -16,6 +16,7 @@ import java.util.List;
 
 public class Spaceship {
     private Texture texture;
+    private TextureManager textureManager;
     private Vector2 position;
     private int ammunitions;
     public int kills = 0;
@@ -27,8 +28,9 @@ public class Spaceship {
     private List<Bullet> bullets = new ArrayList<Bullet>();
     private List<Alien> aliens;
 
-    public Spaceship(List<Alien> aliens) {
-        texture = new Texture("assets/images/spaceships/spaceship.png");
+    public Spaceship(TextureManager textureManager, List<Alien> aliens) {
+        this.textureManager = textureManager;
+        texture = textureManager.getTexture("spaceship");
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
         scale *= 0.075f;
         x_nave = Gdx.graphics.getWidth() / 2f - texture.getWidth() / 2f * scale;
@@ -117,7 +119,7 @@ public class Spaceship {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             // verificar se ja tem 3 tiros na tela
             if (bullets.size() < 5 && ammunitions > 0) {
-                bullets.add(new Bullet(getPosition(), angle, texture.getWidth() * scale, texture.getHeight() * scale));
+                bullets.add(new Bullet(this.textureManager, getPosition(), angle, texture.getWidth() * scale, texture.getHeight() * scale));
                 this.ammunitions--;
                 // System.out.println("Ammunitions: " + ammunitions);
             }
@@ -179,7 +181,7 @@ public class Spaceship {
                         alien.dispose();
                         continue;
                     }
-                    alien.setTextureToDraw("assets/images/aliens/alienred.png");
+                    alien.setTextureToDraw("alienDead");
                     // fazer o alien ir para tras e parar de se mover
                     alien.setSpeed(-30);
                     alien.markDeath();
@@ -199,6 +201,10 @@ public class Spaceship {
 
 
     public void dispose() {
-        texture.dispose();
+        // texture.dispose();
+        for (Bullet bullet : bullets) {
+            bullet.dispose();
+        }
+        // textureMan.dispose();
     }
 }

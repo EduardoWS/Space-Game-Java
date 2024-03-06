@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 
 public class Alien {
-    private Texture texture = new Texture("assets/images/aliens/alien1.png");
+    private Texture texture;
+    private TextureManager textureManager;
     private Vector2 position;
     private float speed = 200;
     private boolean death = false;
@@ -18,7 +19,9 @@ public class Alien {
     private final float TIME_TO_REMOVE = 2; // Tempo em segundos antes da remoção
     private float deltaTime = Gdx.graphics.getDeltaTime();
 
-    public Alien(int pos, Vector2 spaceshipPosition) {
+    public Alien(TextureManager textureManager, int pos, Vector2 spaceshipPosition) {
+        texture = textureManager.getTexture("alien");
+        this.textureManager = textureManager;
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
         scale *= 0.035f; // Ajuste este valor conforme necessário
 
@@ -60,8 +63,8 @@ public class Alien {
         return position;
     }
 
-    public void setTextureToDraw(String texturePath) {
-        texture = new Texture(texturePath);
+    public void setTextureToDraw(String key) {
+        texture = this.textureManager.getTexture(key);
     }
 
     public void setSpeed(float speed) {
@@ -98,7 +101,7 @@ public class Alien {
 
 
     public void dispose() {
-        
-        texture.dispose();
+        // textureManager.dispose();
+        // texture.dispose();
     }
 }

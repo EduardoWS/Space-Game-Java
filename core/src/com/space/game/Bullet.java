@@ -14,10 +14,10 @@ public class Bullet {
     private Rectangle bounds;
     private boolean shouldRemove = false;
 
-    public Bullet(Vector2 spaceshipPosition, float angle, float spaceshipWidth, float spaceshipHeight) {
+    public Bullet(TextureManager textureManager, Vector2 spaceshipPosition, float angle, float spaceshipWidth, float spaceshipHeight) {
         this.angle = angle + 90;
 
-        texture = new Texture("assets/images/guns/tiro2.png");
+        texture = textureManager.getTexture("bullet");
         float bulletWidth = texture.getWidth();
         float bulletHeight = texture.getHeight();
         float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
@@ -58,6 +58,7 @@ public class Bullet {
     }
 
     public void dispose() {
-        texture.dispose();
+        // texture.dispose();
+
     }
 }
