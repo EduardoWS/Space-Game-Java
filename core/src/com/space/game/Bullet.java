@@ -10,7 +10,7 @@ public class Bullet {
     private Texture texture;
     private Vector2 position;
     private float angle;
-    private float speed = 800; 
+    private float speed = 10; 
     private Rectangle bounds;
     private boolean shouldRemove = false;
 
@@ -20,11 +20,10 @@ public class Bullet {
         texture = textureManager.getTexture("bullet");
         float bulletWidth = texture.getWidth();
         float bulletHeight = texture.getHeight();
-        float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
-        float bullet_y = spaceshipPosition.y + spaceshipHeight / 2 - bulletHeight / 2;
-        // TODO: melhorar essa parte
-        // float bullet_x = spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2;
-        // float bullet_y = spaceshipPosition.y + spaceshipHeight ;
+        
+    
+        float bullet_x = (spaceshipPosition.x + spaceshipWidth / 2 - bulletWidth / 2) - bulletWidth / 2;
+        float bullet_y = spaceshipPosition.y + spaceshipHeight;
         position = new Vector2(bullet_x, bullet_y);
         bounds = new Rectangle(position.x, position.y, bulletWidth, bulletHeight);
     }
@@ -49,8 +48,14 @@ public class Bullet {
 
     public void render(SpriteBatch batch) {
         if (shouldRemove) return;
-        batch.draw(texture, position.x, position.y, texture.getWidth() / 2, texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 
-        1, 1, angle+90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        batch.draw(texture, 
+        position.x, position.y, 
+        texture.getWidth() / 2, texture.getHeight() / 2, 
+        texture.getWidth(), texture.getHeight(), 
+        1, 1, 
+        angle+90, 0, 0, 
+        texture.getWidth(), texture.getHeight(), 
+        false, false);
     }
 
     public Rectangle getBounds() {

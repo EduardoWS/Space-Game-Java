@@ -85,14 +85,14 @@ public class Alien {
     }
 
     public void update(Vector2 spaceshipPosition) {
-        Vector2 direction = new Vector2(spaceshipPosition.x - position.x, spaceshipPosition.y - position.y);
-        direction.nor(); // Normaliza o vetor de direção
-        position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
-        position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
-        bounds.setPosition(position);
-        if (this.isDead()) {
-            this.deathTimer += this.deltaTime;
-        }
+        // Vector2 direction = new Vector2(spaceshipPosition.x - position.x, spaceshipPosition.y - position.y);
+        // direction.nor(); // Normaliza o vetor de direção
+        // position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
+        // position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
+        // bounds.setPosition(position);
+        // if (this.isDead()) {
+        //     this.deathTimer += this.deltaTime;
+        // }
     }
 
     public Rectangle getBounds() {

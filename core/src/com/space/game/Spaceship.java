@@ -136,8 +136,14 @@ public class Spaceship {
 
     public void render(SpriteBatch batch) {
         // Desenha a textura da nave com a rotação e a escala aplicadas
-        batch.draw(texture, position.x, position.y, texture.getWidth() / 2, texture.getHeight() / 2, texture.getWidth(), texture.getHeight(), 
-        scale, scale, angle, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        batch.draw( texture, 
+                    position.x, position.y,                             // x e y da posição da nave
+                    texture.getWidth() / 2, texture.getHeight() / 2,    // x e y do ponto de origem da rotação
+                    texture.getWidth(), texture.getHeight(),            // largura e altura da textura
+                    scale, scale,                                       // escala em x e y
+                    angle, 0, 0,                              // rotação e coordenadas da textura
+                    texture.getWidth(), texture.getHeight(),            // srcWidth e srcHeight (largura e altura da textura original)
+                    false, false);                          // flip horizontal e vertical
     
         Iterator<Bullet> bulletIterator = bullets.iterator();
         while (bulletIterator.hasNext()) {
