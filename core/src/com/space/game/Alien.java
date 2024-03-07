@@ -43,7 +43,10 @@ public class Alien {
             position = new Vector2(0, spaceshipPosition.y);
         }
 
-        bounds = new Rectangle(position.x, position.y, texture.getWidth() * scale, texture.getHeight() * scale);
+        // bounds = new Rectangle(position.x, position.y, texture.getWidth() * scale, texture.getHeight() * scale);
+        // Aumenta a área de colisão para ser maior do que a textura
+        float boundsPadding = 30f; // Ajuste este valor para aumentar a área de colisão
+        bounds = new Rectangle(position.x - boundsPadding/2, position.y - boundsPadding/2, texture.getWidth() * scale + boundsPadding, texture.getHeight() * scale + boundsPadding);
     }
 
     public void markDeath() {
@@ -85,14 +88,14 @@ public class Alien {
     }
 
     public void update(Vector2 spaceshipPosition) {
-        // Vector2 direction = new Vector2(spaceshipPosition.x - position.x, spaceshipPosition.y - position.y);
-        // direction.nor(); // Normaliza o vetor de direção
-        // position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
-        // position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
-        // bounds.setPosition(position);
-        // if (this.isDead()) {
-        //     this.deathTimer += this.deltaTime;
-        // }
+        Vector2 direction = new Vector2(spaceshipPosition.x - position.x, spaceshipPosition.y - position.y);
+        direction.nor(); // Normaliza o vetor de direção
+        position.x += direction.x * speed * Gdx.graphics.getDeltaTime();
+        position.y += direction.y * speed * Gdx.graphics.getDeltaTime();
+        bounds.setPosition(position);
+        if (this.isDead()) {
+            this.deathTimer += this.deltaTime;
+        }
     }
 
     public Rectangle getBounds() {

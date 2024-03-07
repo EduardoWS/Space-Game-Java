@@ -33,8 +33,10 @@ public class Spaceship {
         texture = textureManager.getTexture("spaceship");
         scale = Math.min(Gdx.graphics.getWidth() / (float)texture.getWidth(), Gdx.graphics.getHeight() / (float)texture.getHeight());
         scale *= 0.075f;
-        x_nave = Gdx.graphics.getWidth() / 2f - texture.getWidth() / 2f * scale;
-        y_nave = Gdx.graphics.getHeight() / 2f - texture.getHeight() / 2f * scale;
+        // scale *= 0.08f;
+        // scale =1;
+        x_nave = Gdx.graphics.getWidth() / 2f - texture.getWidth() / 2f  ;
+        y_nave = Gdx.graphics.getHeight() / 2f - texture.getHeight() / 2f ;
         // System.out.println("x_nave: " + x_nave + " y_nave: " + y_nave);
         position = new Vector2(x_nave, y_nave);
         this.aliens = aliens;
@@ -119,7 +121,7 @@ public class Spaceship {
         if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
             // verificar se ja tem 3 tiros na tela
             if (bullets.size() < 5 && ammunitions > 0) {
-                bullets.add(new Bullet(this.textureManager, getPosition(), angle, texture.getWidth() * scale, texture.getHeight() * scale));
+                bullets.add(new Bullet(this.textureManager, getPosition(), angle, texture.getWidth() * scale, texture.getHeight() * scale, scale));
                 this.ammunitions--;
                 // System.out.println("Ammunitions: " + ammunitions);
             }
