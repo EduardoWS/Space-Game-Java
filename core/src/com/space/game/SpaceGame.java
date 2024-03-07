@@ -39,7 +39,7 @@ public class SpaceGame extends ApplicationAdapter {
 
         gsm = new GameStateManager();
 		batch = new SpriteBatch(); // Crie um novo objeto SpriteBatch
-        background = new Background();
+        background = new Background(textureManager);
         // spaceship = new Spaceship(textureManager, aliens);
 
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("assets/fonts/nasalization-rg.otf"));
@@ -95,7 +95,8 @@ public class SpaceGame extends ApplicationAdapter {
 
 
     private void updateMenuState() {
-        
+        background.render(batch);
+        background.update();
         // Desenha o título "SPACE GAME"
         String title = "SPACE GAME";
         GlyphLayout titleLayout = new GlyphLayout(font150, title);
@@ -129,6 +130,7 @@ public class SpaceGame extends ApplicationAdapter {
 
     private void updatePlayingState() {
         background.render(batch);
+        background.update();
         spaceship.render(batch);
         spaceship.update();
     
@@ -265,6 +267,7 @@ public class SpaceGame extends ApplicationAdapter {
         textureManager.loadTexture("alien", TexturePaths.ALIEN);
         textureManager.loadTexture("alienDead", TexturePaths.ALIEN_DEAD);
         textureManager.loadTexture("background", TexturePaths.BACKGROUND);
+        textureManager.loadTexture("star", TexturePaths.STAR);
     }
 
 
