@@ -14,6 +14,12 @@ gradle-app.setting
 /server/build/
 /shared/build/
 
+# env files
+.env*.local
+.env*.properties
+# Ignorar arquivo de propriedades locais com segredos
+local.properties
+
 ## Java:
 *.class
 *.war
@@ -161,3 +167,4 @@ Thumbs.db
 ## You could also add that configuration to the text in nativeimage.gradle .
 ## You should delete or comment out the next line if you have configuration in a different resource-config.json .
 **/resource-config.json
+

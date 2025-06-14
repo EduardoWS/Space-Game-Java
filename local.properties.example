@@ -1,0 +1,13 @@
+# Exemplo de configuração do arquivo local.properties
+# Copie este arquivo para local.properties e configure suas variáveis
+
+# String de conexão do MongoDB
+# Substitua pelos seus próprios dados de conexão
+# Deixe vazio ou remova esta linha se não quiser usar o banco de dados
+DB_CONNECTION_STRING="mongodb+srv://usuario:senha@cluster.mongodb.net/?retryWrites=true&w=majority"
+
+# Exemplo para conexão local do MongoDB:
+# DB_CONNECTION_STRING="mongodb://localhost:27017/game_database"
+
+# Para desabilitar a conexão com o banco de dados, deixe vazia ou comente a linha:
+# DB_CONNECTION_STRING="" 

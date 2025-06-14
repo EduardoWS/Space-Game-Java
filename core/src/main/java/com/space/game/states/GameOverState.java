@@ -112,17 +112,20 @@ public class GameOverState implements GameStateInterface {
             // whatHighScore = 1 -> é highscore local
             // whatHighScore = 2 -> é highscore global
             // whatHighScore = 3 -> é highscore local e global
-            if (scoreManager.isLocalHighScore(mapManager.getSpaceship().getKillCount()) && scoreManager.isHighScore(mapManager.getSpaceship().getKillCount())) {
+            
+            boolean isLocalHigh = scoreManager.isLocalHighScore(mapManager.getSpaceship().getKillCount());
+            boolean isGlobalHigh = scoreManager.isDatabaseAvailable() && 
+                                  scoreManager.isHighScore(mapManager.getSpaceship().getKillCount());
+            
+            if (isLocalHigh && isGlobalHigh) {
                 whatHighScore = 3;
                 setupUI();
-            } else if (scoreManager.isHighScore(mapManager.getSpaceship().getKillCount())) {
+            } else if (isGlobalHigh) {
                 whatHighScore = 2;
                 setupUI();
-
-            } else if (scoreManager.isLocalHighScore(mapManager.getSpaceship().getKillCount())) {
+            } else if (isLocalHigh) {
                 whatHighScore = 1;
                 setupUI();
-
             } else {
                 whatHighScore = 0;
                 soundManager.stopGameOverMusic();

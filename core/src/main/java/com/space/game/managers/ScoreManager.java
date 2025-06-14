@@ -21,6 +21,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import com.space.game.SpaceGame;
@@ -31,7 +32,7 @@ import static com.mongodb.client.model.Filters.eq;
 public class ScoreManager {
 
     // pegar password no drive
-    private static final String CONNECTION_STRING = "---";
+    private static final String CONNECTION_STRING = loadConnectionString();
     private static final String DATABASE_NAME = "game_database";
     private static final String COLLECTION_NAME = "scores";
     private static final String FILE_PATH = "data/scores.csv";
@@ -41,6 +42,44 @@ public class ScoreManager {
     private MongoCollection<Document> collection;
 
     private boolean error;
+
+    // Método estático para carregar a connection string do arquivo de propriedades
+    private static String loadConnectionString() {
+        Properties properties = new Properties();
+        try {
+            // Usa o sistema de arquivos do LibGDX para ler o arquivo dos assets
+            FileHandle fileHandle = Gdx.files.internal("game.properties");
+            if (!fileHandle.exists()) {
+                Gdx.app.error("ScoreManager", "Arquivo game.properties não encontrado");
+                return null;
+            }
+            properties.load(fileHandle.reader());
+            String connectionString = properties.getProperty("DB_CONNECTION_STRING");
+            if (connectionString == null || connectionString.trim().isEmpty()) {
+                Gdx.app.error("ScoreManager", "DB_CONNECTION_STRING não encontrada ou vazia no game.properties");
+                return null;
+            }
+            
+            // Remove as aspas se existirem e decodifica caracteres escapados
+            connectionString = connectionString.trim();
+            if (connectionString.startsWith("\"") && connectionString.endsWith("\"")) {
+                connectionString = connectionString.substring(1, connectionString.length() - 1);
+            }
+            
+            // Decodifica caracteres escapados comuns em properties files
+            connectionString = connectionString.replace("\\:", ":");
+            connectionString = connectionString.replace("\\=", "=");
+            connectionString = connectionString.replace("\\&", "&");
+            
+            Gdx.app.log("ScoreManager", "Connection string carregada: " + 
+                connectionString.substring(0, Math.min(50, connectionString.length())) + "...");
+            
+            return connectionString;
+        } catch (IOException e) {
+            Gdx.app.error("ScoreManager", "Não foi possível carregar game.properties", e);
+            return null;
+        }
+    }
 
     public static class ScoreEntry {
         public String playerName;
@@ -53,7 +92,15 @@ public class ScoreManager {
     }
 
     public ScoreManager() {
+        // Verifica se a connection string está disponível antes de tentar conectar
+        if (CONNECTION_STRING == null || CONNECTION_STRING.trim().isEmpty()) {
+            Gdx.app.log("ScoreManager", "Connection string não disponível. Rodando apenas com scores locais.");
+            this.error = true;
+            return;
+        }
+
         try {
+            Gdx.app.log("ScoreManager", "Tentando conectar ao banco de dados...");
             ConnectionString connectionString = new ConnectionString(CONNECTION_STRING);
             ServerApi serverApi = ServerApi.builder()
                     .version(ServerApiVersion.V1)
@@ -65,15 +112,37 @@ public class ScoreManager {
             mongoClient = MongoClients.create(settings);
             database = mongoClient.getDatabase(DATABASE_NAME);
             collection = database.getCollection(COLLECTION_NAME);
-            System.out.println("Successfully connected to MongoDB!");
+            
+            // Testa a conexão fazendo uma operação simples
+            collection.countDocuments();
+            
+            Gdx.app.log("ScoreManager", "Conectado com sucesso ao MongoDB!");
             this.error = false;
-        } catch (MongoException e) {
+        } catch (Exception e) {
+            Gdx.app.error("ScoreManager", "Erro ao conectar com o banco de dados: " + e.getMessage());
             e.printStackTrace();
             this.error = true;
+            
+            // Fecha recursos se foram parcialmente inicializados
+            if (mongoClient != null) {
+                try {
+                    mongoClient.close();
+                } catch (Exception closeException) {
+                    Gdx.app.error("ScoreManager", "Erro ao fechar conexão: " + closeException.getMessage());
+                }
+                mongoClient = null;
+                database = null;
+                collection = null;
+            }
         }
     }
 
     public void saveGlobalScore(String playerName, int score) {
+        if (this.error || collection == null) {
+            Gdx.app.log("ScoreManager", "Banco de dados não disponível. Score global não será salvo.");
+            return;
+        }
+        
         try{
             List<ScoreEntry> scoresList = loadGlobalScores();
 
@@ -93,13 +162,20 @@ public class ScoreManager {
                         .append("score", entry.score);
                 collection.insertOne(doc);
             }
-            System.out.println("Global score of " + score + " saved for player " + playerName);
-        } catch (MongoException e) {
+            Gdx.app.log("ScoreManager", "Score global de " + score + " salvo para o jogador " + playerName);
+        } catch (Exception e) {
+            Gdx.app.error("ScoreManager", "Erro ao salvar score global: " + e.getMessage());
             e.printStackTrace();
+            this.error = true;
         }
     }
 
     public List<ScoreEntry> loadGlobalScores() {
+        if (this.error || collection == null) {
+            Gdx.app.log("ScoreManager", "Banco de dados não disponível. Retornando lista vazia.");
+            return new ArrayList<>();
+        }
+        
         try{
             SpaceGame.getLogger().debug("Loading global scores");
             List<ScoreEntry> scoresList = new ArrayList<>();
@@ -111,10 +187,9 @@ public class ScoreManager {
             collection.find().forEach(processDocument);
             scoresList.sort(Comparator.comparingInt(o -> -o.score)); // Ordenate in descending order
             SpaceGame.getLogger().debug("Global scores loaded");
-            // SpaceGame.getLogger().error("Error loading global scores", new Exception("Test exception"));
-            this.error = false;
             return scoresList;
-        } catch (MongoException e) {
+        } catch (Exception e) {
+            Gdx.app.error("ScoreManager", "Erro ao carregar scores globais: " + e.getMessage());
             e.printStackTrace();
             this.error = true;
             return new ArrayList<>();
@@ -177,6 +252,10 @@ public class ScoreManager {
     }
 
     public boolean isHighScore(int score) {
+        if (this.error || collection == null) {
+            return false; // Se não há conexão, não pode ser high score global
+        }
+        
         List<ScoreEntry> scoresList = loadGlobalScores();
         return scoresList.size() < 10 || score > scoresList.get(scoresList.size() - 1).score;
     }
@@ -194,5 +273,9 @@ public class ScoreManager {
 
     public boolean isError() {
         return error;
+    }
+    
+    public boolean isDatabaseAvailable() {
+        return !error && collection != null;
     }
 }

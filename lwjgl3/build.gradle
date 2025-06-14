@@ -118,3 +118,39 @@ tasks.register('dist') {
 if(enableGraalNative == 'true') {
   apply from: file("nativeimage.gradle")
 }
+
+
+// Carrega as propriedades do arquivo local.properties na raiz do projeto
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+}
+
+// Tarefa que gera um arquivo de propriedades nos resources
+// Acessível em tempo de execução pelo LibGDX
+task generateGameProperties {
+    doLast {
+        def propertiesFile = file("$buildDir/resources/main/game.properties")
+        propertiesFile.parentFile.mkdirs()
+        
+        // Pega a variável do local.properties ou usa um valor padrão se não encontrar
+        def connectionString = localProperties.getProperty('DB_CONNECTION_STRING', '')
+        
+        // Remove aspas se existirem para evitar problemas de escape
+        if (connectionString.startsWith('"') && connectionString.endsWith('"')) {
+            connectionString = connectionString.substring(1, connectionString.length() - 1)
+        }
+        
+        // Escreve o arquivo manualmente para evitar problemas de escape do Properties.store()
+        propertiesFile.text = """# Generated game properties
+# ${new Date()}
+DB_CONNECTION_STRING=${connectionString}
+"""
+        
+        println "Game properties generated with connection string: ${connectionString.take(50)}..."
+    }
+}
+
+// Garante que nossa tarefa rode antes de processar os recursos do projeto
+processResources.dependsOn generateGameProperties

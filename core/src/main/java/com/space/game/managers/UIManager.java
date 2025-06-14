@@ -51,7 +51,7 @@ public class UIManager {
         generator.dispose();
     }
 
-    public void displayMenu() {
+    public void displayMenu(boolean isDatabaseAvailable) {
         // Desenha o título "SPACE GAME"
         String title = "SPACE GAME";
         GlyphLayout titleLayout = new GlyphLayout(font150, title);
@@ -67,19 +67,29 @@ public class UIManager {
         font30.setColor(cian_color);
         font30.draw(batch, buttonText, buttonX, buttonY);
 
-        // Desenha o botão "Global Scores"
-        buttonText = "2. Global Scores";
-        buttonLayout = new GlyphLayout(font30, buttonText);
-        buttonX = game.getWorldWidth() / const_larg;
-        buttonY = buttonY - buttonLayout.height*3;
-        font30.draw(batch, buttonText, buttonX, buttonY);
+        // Condicional para mostrar ou esconder Global Scores
+        if (isDatabaseAvailable) {
+            // Desenha o botão "Global Scores"
+            buttonText = "2. Global Scores";
+            buttonLayout = new GlyphLayout(font30, buttonText);
+            buttonX = game.getWorldWidth() / const_larg;
+            buttonY = buttonY - buttonLayout.height*3;
+            font30.draw(batch, buttonText, buttonX, buttonY);
 
-        // Desenha o botão "Local Scores"
-        buttonText = "3. Local Scores";
-        buttonLayout = new GlyphLayout(font30, buttonText);
-        buttonX = game.getWorldWidth() / const_larg;
-        buttonY = buttonY - buttonLayout.height*3;
-        font30.draw(batch, buttonText, buttonX, buttonY);
+            // Desenha o botão "Local Scores"
+            buttonText = "3. Local Scores";
+            buttonLayout = new GlyphLayout(font30, buttonText);
+            buttonX = game.getWorldWidth() / const_larg;
+            buttonY = buttonY - buttonLayout.height*3;
+            font30.draw(batch, buttonText, buttonX, buttonY);
+        } else {
+            // Quando não há conexão, Local Scores fica como opção 2
+            buttonText = "2. Local Scores";
+            buttonLayout = new GlyphLayout(font30, buttonText);
+            buttonX = game.getWorldWidth() / const_larg;
+            buttonY = buttonY - buttonLayout.height*3;
+            font30.draw(batch, buttonText, buttonX, buttonY);
+        }
 
         // Desenha o botão "Exit"
         buttonText = "0. Exit";
