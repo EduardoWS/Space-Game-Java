@@ -63,7 +63,7 @@ public class AlienManager {
     }
 
     public void spawnAliens(Spaceship spaceship) {
-        if (deadAliensCount >= config.enemyCount) {
+        if (deadAliensCount >= config.getEnemyCount()) {
             this.endLevel = true;
             return;
         }
@@ -79,23 +79,23 @@ public class AlienManager {
         }
         
         // Se houver menos de três aliens ativos, spawna mais
-        if (activeAlienCount <= MathUtils.random(3, 7) && config.enemyMovementPatterns.size() > 0) {
+        if (activeAlienCount <= MathUtils.random(3, 7) && config.getEnemyMovementPatterns().size() > 0) {
             int contSpawn = 1;
-            if (config.enemyMovementPatterns.size() > 7) {
+            if (config.getEnemyMovementPatterns().size() > 7) {
                 contSpawn = MathUtils.random(4, 7);
             } else {
-                contSpawn = config.enemyMovementPatterns.size();
+                contSpawn = config.getEnemyMovementPatterns().size();
             }
             for (int i = 0; i < contSpawn; i++) {
                 // Define posição inicial do alien baseada em 'i' para variar suas posições de spawn
                 Vector2 alienPosition = calculateAlienSpawnPosition(i, spaceship.getPosition());
                 // se config.enemySpeed for 100, então é para gerar numeros de 100 ate 130
-                float speed = MathUtils.random(config.enemySpeed, config.enemySpeed + 5);
+                float speed = MathUtils.random(config.getEnemySpeed(), config.getEnemySpeed() + 5);
                 float alienScale = 0.6f * scale_screen; 
                 int textureType = 0; // Tipo de textura que pode ser variada para diferentes aliens
                 
-                this.addAlien(alienPosition, alienScale, textureType, speed, config.enemyMovementPatterns.get(0));
-                config.enemyMovementPatterns.remove(0);
+                this.addAlien(alienPosition, alienScale, textureType, speed, config.getEnemyMovementPatterns().get(0));
+                config.getEnemyMovementPatterns().remove(0);
                 // config.enemyCount--;
             }
         }

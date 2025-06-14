@@ -47,7 +47,7 @@ public class MapManager {
 
     public void update() {
         if (currentLevel != null && currentLevel.getEndLevel()) {
-            loadLevel(currentLevel.getConfig().levelNumber + 1);
+            loadLevel(currentLevel.getConfig().getLevelNumber() + 1);
         }
         if (currentLevel != null && waveActive) {
             currentLevel.update();
